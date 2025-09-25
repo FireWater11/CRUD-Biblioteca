@@ -29,7 +29,7 @@ export async function buscarLivroId(req, res) {
 };
 
 export async function adicionarLivro(req, res) {
-    const {title, autor} = req;
+    const {title, autor} = req.body;
 
     if (!title || !autor) {
         return res.status(400).json({ mensagem: "Titulo e autor são obrigatórios" });
@@ -43,9 +43,9 @@ export async function adicionarLivro(req, res) {
             }
         });
 
-        return res.status(201).json({ mensagem: `Livro cadastrado com sucesso!` });
+        return res.status(201).json({ mensagem: `O Livro ${title} foi cadastrado com sucesso!` });
 
     } catch (error) {
-
+        console.log(error);
     }
 }

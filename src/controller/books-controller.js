@@ -28,6 +28,24 @@ export async function buscarLivroId(req, res) {
     }
 };
 
-// export async function adicionarLivro(req, res) {
-    
-// }
+export async function adicionarLivro(req, res) {
+    const {title, autor} = req;
+
+    if (!title || !autor) {
+        return res.status(400).json({ mensagem: "Titulo e autor são obrigatórios" });
+    }
+
+    try {
+        await prisma.Book.create({
+            data: {
+                title:title,
+                autor:autor
+            }
+        });
+
+        return res.status(201).json({ mensagem: `Livro cadastrado com sucesso!` });
+
+    } catch (error) {
+
+    }
+}

@@ -22,14 +22,14 @@ export async function cadastrarUsuario(req, res) {
     };
 
     try {
-        await prisma.User.create({
+        const novoUsuario = await prisma.User.create({
             data: {
                 username: username,
                 password: password
             }
         });
 
-        return res.status(201).json({ mensagem: `Usuario cadastrado com sucesso!` });
+        return res.status(201).json({ mensagem: `Usuario cadastrado com sucesso!` ,novoUsuario });
 
     } catch (error) {
         console.log(error)

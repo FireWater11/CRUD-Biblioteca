@@ -36,14 +36,16 @@ export async function adicionarLivro(req, res) {
     }
 
     try {
-        await prisma.Book.create({
+        const novoLivro = await prisma.Book.create({
             data: {
                 title:title,
                 autor:autor
             }
         });
 
-        return res.status(201).json({ mensagem: `O Livro ${title} foi cadastrado com sucesso!` });
+        // return res.status(201).json({ mensagem: `O Livro ${title} foi cadastrado com sucesso!` });
+        return res.status(201).json({ mensagem: `O Livro foi cadastrado com sucesso!` ,novoLivro });
+
 
     } catch (error) {
         console.log(error);

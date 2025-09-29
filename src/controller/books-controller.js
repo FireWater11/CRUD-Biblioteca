@@ -203,10 +203,23 @@ export async function atualizarLivro(req, res) {
         return res.status(404).json({mensagem: "o livro nao existe no banco de dados"});
     };
 
-    const {title, autor, available} = req.params;
-
     try {
+        const {title, autor, available} = req.params;
 
+        if (!title || !autor || !available) {
+            return res.status(404).json({mensagem: "as informacoes do livro devem estar completas"});
+        };
+
+        const tempUpdate = await prisma.Book.update({
+            where: {
+                id:Number(idAtualizarLivro)
+            },
+            data: {
+                title: title,
+                autor: autor,
+                available: available
+            }
+        });
     } catch (error) {
         return res.status(500).json({ mensagem: "Erro interno no servidor" });
     };

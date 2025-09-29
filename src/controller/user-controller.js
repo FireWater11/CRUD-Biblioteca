@@ -32,6 +32,6 @@ export async function cadastrarUsuario(req, res) {
         return res.status(201).json({ mensagem: `Usuario cadastrado com sucesso!` ,novoUsuario });
 
     } catch (error) {
-        console.log(error)
+        return res.status(500).json({ mensagem: "Erro interno no servidor" });
     }
 }

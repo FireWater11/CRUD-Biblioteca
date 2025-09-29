@@ -8,8 +8,8 @@ export async function buscarLivro(req, res) {
         const livrosBD = await prisma.Book.findMany();
         res.status(200).json(livrosBD);
     } catch (error) {
-        console.log(error)
-    }
+        return res.status(500).json({ mensagem: "Erro interno no servidor" });
+    };
 };
 
 // BUSCAR LIVRO PELO ID
@@ -24,14 +24,18 @@ export async function buscarLivroId(req, res) {
             }
         );
 
+        if(isNaN(id)) {
+            return res.status(400).json({ mensagem: "ID inválido, precisa ser um numero" });
+        };
+
         if (!book) {
             return res.status(404).json({ mensagem: "livro não encontrado" });
         };
 
         res.status(200).json(book);
     } catch (error) {
-        console.log(error);
-    }
+        return res.status(500).json({ mensagem: "Erro interno no servidor" });
+    };
 };
 
 // ADICIONAR LIVRO
@@ -55,13 +59,17 @@ export async function adicionarLivro(req, res) {
 
 
     } catch (error) {
-        console.log(error);
-    }
+        return res.status(500).json({ mensagem: "Erro interno no servidor" });
+    };
 };
 
 // DELETAR LIVRO
 export async function deletarLivro(req, res) {
     const idLivro = parseInt(req.params.id);
+    
+    if(isNaN(idLivro)) {
+        return res.status(400).json({ mensagem: "ID inválido, precisa ser um numero" });
+    };
 
     if (!idLivro) {
         return res.status(400).json({mensagem: "é necessario um ID para realizar a tarefa"});
@@ -77,17 +85,24 @@ export async function deletarLivro(req, res) {
         res.status(200).json({mensagem: `o livro ${removerLivro.title} foi deletado`});
 
     } catch (error) {
-        console.log(error);
-    }
+        return res.status(500).json({ mensagem: "Erro interno no servidor" });
+    };
     
 };
 
+// PEGAR LIVRO EMPRESTADO
 export async function pegarLivroEmprestado(req, res) {
     const idLivroEmprestar = parseInt(req.params.id);
 
+    if(isNaN(idLivroEmprestar)) {
+        return res.status(400).json({ mensagem: "ID inválido, precisa ser um numero" });
+    };
+
+
     if (!idLivroEmprestar) {
         return res.status(400).json({mensagem: "é necessario um ID para realizar a tarefa"});
-    }
+    };
+
 
     try {
         const idLivro = await prisma.Book.findUnique({
@@ -97,15 +112,103 @@ export async function pegarLivroEmprestado(req, res) {
         });
 
         if (!idLivro) {
-            return res.status().json({mensagem: "o livro nao existe no banco de dados"});
+            return res.status(404).json({mensagem: "o livro nao existe no banco de dados"});
         };
 
-        if () {
 
+
+        if (!idLivro.available) {
+            return res.status(400).json({ mensagem: "o livro já está emprestado" });
         };
 
+
+        const updateLivro = await prisma.Book.update({
+            where: {
+                id:Number(idLivroEmprestar)
+            },
+
+            data: {
+                available: false
+            }
+
+        });
+
+        res.status(200).json({mensagem: "o livro foi emprestado"})
 
     } catch (error) {
-        console.log(error);
-    }
+        return res.status(500).json({ mensagem: "Erro interno no servidor" });
+    };
 };
+
+// DEVOLVER LIVRO
+export async function devolverLivro(req, res) {
+    const idLivroEmprestado = parseInt(req.params.id);
+
+    if(isNaN(idLivroEmprestado)) {
+        return res.status(400).json({ mensagem: "ID inválido, precisa ser um numero" });
+    };
+
+
+    if (!idLivroEmprestado) {
+        return res.status(400).json({mensagem: "é necessario um ID para realizar a tarefa"});
+    };
+
+
+    try {
+        const idLivroEncontrado = await prisma.Book.findUnique({
+            where: {
+                id:Number(idLivroEmprestado)
+            }
+        });
+
+        if (!idLivroEncontrado) {
+            return res.status(404).json({mensagem: "o livro nao existe no banco de dados"});
+        };
+
+
+
+        if (idLivroEncontrado.available) {
+            return res.status(400).json({ mensagem: "o livro nao está emprestado" });
+        };
+
+
+        const updateLivro = await prisma.Book.update({
+            where: {
+                id:Number(idLivroEmprestado)
+            },
+
+            data: {
+                available: true
+            }
+
+        });
+
+        res.status(200).json({mensagem: "o livro foi devolvido"})
+
+    } catch (error) {
+        return res.status(500).json({ mensagem: "Erro interno no servidor" });
+    };
+};
+
+
+// ATUALIZAR LIVRO
+export async function atualizarLivro(req, res) {
+    const idAtualizarLivro = req.params.id;
+
+    if (isNaN(idAtualizarLivro)) {
+        return res.status(400).json({ mensagem: "ID inválido, precisa ser um numero" });
+    };
+
+    if (!idAtualizarLivro) {
+        return res.status(404).json({mensagem: "o livro nao existe no banco de dados"});
+    };
+
+    const {title, autor, available} = req.params;
+
+    try {
+
+    } catch (error) {
+        return res.status(500).json({ mensagem: "Erro interno no servidor" });
+    };
+};
+

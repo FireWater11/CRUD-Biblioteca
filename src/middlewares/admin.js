@@ -3,9 +3,10 @@ const prisma = new PrismaClient();
 
 export async function verificarAdmin(req, res, next) {
     
-    const id = req.user.id;
-
     try {
+
+        // REVER
+        const id = req.user.id;
 
         // verificar se o usuario existe no banco
         const user = await prisma.User.findUnique({

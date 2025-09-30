@@ -1,5 +1,5 @@
 import express from 'express';
-import { adicionarLivro, buscarLivro, buscarLivroId, deletarLivro, devolverLivro, pegarLivroEmprestado } from '../controller/books-controller.js';
+import { adicionarLivro, atualizarLivro, buscarLivro, buscarLivroId, deletarLivro, devolverLivro, pegarLivroEmprestado } from '../controller/books-controller.js';
 import { verificarAdmin } from '../middlewares/admin.js';
 
 const rotas_livros = express.Router();
@@ -27,6 +27,10 @@ rotas_livros.post('/books/:id/borrow', (req, res) => {
 
 rotas_livros.post('/books/:id/return', (req, res) => {
     devolverLivro(req, res);
+});
+
+rotas_livros.patch('/books/:id', (req, res) => {
+    atualizarLivro(req, res);
 });
 
 export default rotas_livros;

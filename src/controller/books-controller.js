@@ -193,20 +193,17 @@ export async function devolverLivro(req, res) {
 
 // ATUALIZAR LIVRO
 export async function atualizarLivro(req, res) {
-    const idAtualizarLivro = req.params.id;
+    const idAtualizarLivro = parseInt(req.params.id);
 
     if (isNaN(idAtualizarLivro)) {
         return res.status(400).json({ mensagem: "ID inválido, precisa ser um numero" });
     };
 
-    if (!idAtualizarLivro) {
-        return res.status(404).json({mensagem: "o livro nao existe no banco de dados"});
-    };
-
     try {
-        const {title, autor, available} = req.params;
+        const {title, autor, available} = req.body;
 
-        if (!title || !autor || !available) {
+        // avaliable esta === undefined, pq caso o livro tivesse emprestado(false) iria cair nesse IF
+        if (!title || !autor || available === undefined) {
             return res.status(404).json({mensagem: "as informacoes do livro devem estar completas"});
         };
 
@@ -220,6 +217,10 @@ export async function atualizarLivro(req, res) {
                 available: available
             }
         });
+
+        res.status(200).json({mensagem: `informacoes do livro atualizadas com sucesso`})
+
+
     } catch (error) {
         return res.status(500).json({ mensagem: "Erro interno no servidor" });
     };

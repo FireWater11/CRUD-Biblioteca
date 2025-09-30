@@ -10,6 +10,7 @@ Atividade -- Projeto Final Back-End -- CRUD-Biblioteca
 - SQLite
 - Postman
 
+Token: admin:1234 -- Basic YWRtaW46MTIzNA==
 
 # Rotas
 

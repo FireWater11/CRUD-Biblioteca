@@ -6,7 +6,12 @@ export async function verificarAdmin(req, res, next) {
     try {
 
         // REVER
-        const id = req.user.id;
+        const id = parseInt(req.user.id);
+
+        if (!req.user || !req.user.id) {
+            return res.status(401).json({ mensagem: "usuário não autenticado" });
+        };
+
 
         // verificar se o usuario existe no banco
         const user = await prisma.User.findUnique({
